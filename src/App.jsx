@@ -817,7 +817,7 @@ const initialNodes = [
   {
     id: "table-emergencias",
     type: "card",
-    position: { x: 580, y: 2200 },
+    position: { x: 580, y: 2220 },
     data: {
       label: "🗄️  Tabla Emergencias",
       description:
@@ -847,48 +847,33 @@ const initialNodes = [
   {
     id: "format-answer",
     type: "card",
-    position: { x: -400, y: 2500 },
+    position: { x: 630, y: 3000 },
     data: {
       label: "📝  Responder Formatos de la Emergencia",
       description:
-        "POST /Format/formatAnswerResponse\n\nLos formatos asignados a la emergencia deben\nser respondidos (todas sus preguntas llenas)\npara poder finalizar la emergencia.",
+        "POST /Format/formatAnswerResponse\n\nEl usuario completa las preguntas faltantes\nde los formatos asignados a la emergencia.",
       ...P.finalize,
-      width: 400,
+      width: 450,
       borderW: 3,
-      badge: "Requisito para finalizar",
+      badge: "Llenar preguntas",
       badgeBg: "#283593",
     },
   },
   {
     id: "finalize-ok",
     type: "card",
-    position: { x: 1320, y: 2580 },
+    position: { x: 200, y: 2740 },
     data: {
       label: "✅  Emergencia Finalizada",
       description:
-        "Todas las preguntas de todos los formatos\nasociados a la emergencia están diligenciadas.\nLa emergencia puede ser cerrada/finalizada.",
+        "Todas las preguntas de todos los formatos\nestán completas. La emergencia se puede\ncerrar y finalizar exitosamente.",
       ...P.check,
       width: 380,
       borderW: 3,
       rounded: true,
       elevated: true,
-      badge: "Finalizada",
+      badge: "Finalizada ✓",
       badgeBg: "#558B2F",
-    },
-  },
-  {
-    id: "finalize-pending",
-    type: "card",
-    position: { x: 100, y: 2500 },
-    data: {
-      label: "⏳  Pendiente de Completar",
-      description:
-        "Aún hay preguntas sin responder en los\nformatos asignados. No se puede finalizar\nhasta que todas estén llenas.",
-      ...P.noOpt,
-      width: 380,
-      borderW: 3,
-      badge: "No se puede finalizar aún",
-      badgeBg: "#C62828",
     },
   },
 
@@ -1017,6 +1002,7 @@ const initialEdges = [
 
   mk("e-type-normal", "emer-type", "emer-normal", "Normal", "#C62828", {
     thick: false,
+    extra: { sourceHandle: "left-out" },
   }),
   mk("e-type-ambu", "emer-type", "emer-ambulancia", "Ambulancia", "#C62828", {
     thick: false,
@@ -1074,7 +1060,7 @@ const initialEdges = [
     "#558B2F",
     {
       thick: false,
-      extra: { sourceHandle: "right-out", targetHandle: "left-in" },
+      extra: { sourceHandle: "right-out" },
     },
   ),
   mk(
@@ -1115,14 +1101,8 @@ const initialEdges = [
     "#283593",
     { thick: false },
   ),
-  mk(
-    "e-decision-answer",
-    "format-answer-decision",
-    "format-answer",
-    "Responder formatos",
-    "#283593",
-    { extra: { sourceHandle: "left-out", targetHandle: "left-in" } },
-  ),
+
+  // Rama SI: Todo completo -> Finalizar
   mk(
     "e-decision-ok",
     "format-answer-decision",
@@ -1131,17 +1111,33 @@ const initialEdges = [
     "#558B2F",
     {
       thick: false,
-      extra: { sourceHandle: "right-out", targetHandle: "left-in" },
+      extra: { sourceHandle: "left-out" },
     },
   ),
-  mk("e-answer-pending", "format-answer", "finalize-pending", "", "#C62828", {
-    thick: false,
-    extra: { sourceHandle: "right-out", targetHandle: "left-in" },
-  }),
-  mk("e-pending-back", "finalize-pending", "format-answer", "", "#283593", {
-    thick: false,
-    extra: { sourceHandle: "right-out", targetHandle: "left-in" },
-  }),
+
+  // Rama NO: Faltan preguntas -> Responder formatos
+  mk(
+    "e-decision-answer",
+    "format-answer-decision",
+    "format-answer",
+    "NO — Faltan preguntas",
+    "#C62828",
+    { thick: false },
+  ),
+
+  // Ciclo: Después de responder -> Validar de nuevo
+  mk(
+    "e-answer-back-validation",
+    "format-answer",
+    "format-answer-decision",
+    "🔄 Validar de nuevo",
+    "#1565C0",
+    {
+      thick: false,
+      animated: true,
+      extra: { sourceHandle: "right-out" },
+    },
+  ),
 ];
 
 /* ════════════════════════════════════════════════════
@@ -1190,7 +1186,6 @@ function App() {
     "format-answer-decision",
     "format-answer",
     "finalize-ok",
-    "finalize-pending",
   ];
 
   // Actualizar el título según la vista
