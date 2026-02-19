@@ -195,10 +195,10 @@ function DiamondNode({ data }) {
         style={{ background: data.border, width: 9, height: 9, bottom: -4 }}
       />
       <Handle
-        type="target"
+        type="source"
         position={Position.Left}
         id="left-out"
-        style={{ background: data.border, width: 9, height: 9, left: -35 }}
+        style={{ background: data.border, width: 9, height: 9, left: -4 }}
       />
       <Handle
         type="source"
@@ -961,7 +961,7 @@ const initialEdges = [
   }),
   mk("e-q-decision", "question-crud", "q-decision", "", "#EF6C00", {
     thick: false,
-    extra: { sourceHandle: "right-out", targetHandle: "left-out" },
+    extra: { sourceHandle: "right-out" },
   }),
 
   /* ── DECISIÓN SÍ / NO ── */
@@ -1063,7 +1063,7 @@ const initialEdges = [
     "#FF6F00",
     {
       thick: false,
-      extra: { sourceHandle: "left-out", targetHandle: "left-in" },
+      extra: { sourceHandle: "left-out" },
     },
   ),
   mk(
