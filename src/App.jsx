@@ -636,7 +636,7 @@ const initialNodes = [
   {
     id: "emer-type",
     type: "diamond",
-    position: { x: 740, y: 350 },
+    position: { x: 740, y: 450 },
     data: {
       label: "¿Tipo de emergencia?",
       icon: "🔀",
@@ -649,7 +649,7 @@ const initialNodes = [
   {
     id: "emer-normal",
     type: "card",
-    position: { x: 120, y: 760 },
+    position: { x: 120, y: 1010 },
     data: {
       label: "🔴  Emergencia Normal",
       description:
@@ -664,7 +664,7 @@ const initialNodes = [
   {
     id: "emer-ambulancia",
     type: "card",
-    position: { x: 670, y: 760 },
+    position: { x: 670, y: 1010 },
     data: {
       label: "🚑  Emergencia Ambulancia",
       description:
@@ -677,7 +677,7 @@ const initialNodes = [
   {
     id: "emer-interno",
     type: "card",
-    position: { x: 1220, y: 760 },
+    position: { x: 1220, y: 1010 },
     data: {
       label: "🏠  Servicio Interno",
       description:
@@ -694,7 +694,7 @@ const initialNodes = [
   {
     id: "fmt-normal",
     type: "card",
-    position: { x: 110, y: 1040 },
+    position: { x: 110, y: 1390 },
     data: {
       label: "📄  Consumir Formato fr_084",
       description:
@@ -708,7 +708,7 @@ const initialNodes = [
   {
     id: "fmt-ambulancia",
     type: "card",
-    position: { x: 660, y: 1040 },
+    position: { x: 660, y: 1390 },
     data: {
       label: "📄  Endpoint Propio Ambulancia",
       description:
@@ -722,7 +722,7 @@ const initialNodes = [
   {
     id: "fmt-interno",
     type: "card",
-    position: { x: 1210, y: 1040 },
+    position: { x: 1210, y: 1390 },
     data: {
       label: "📄  Consumir Formato fr_000",
       description:
@@ -738,37 +738,73 @@ const initialNodes = [
   {
     id: "logic-normal",
     type: "card",
-    position: { x: 120, y: 1310 },
+    position: { x: 120, y: 1760 },
     data: {
       label: "⚙️  Lógica Emergencia Normal",
       description:
         "Endpoint específico para crear la\nemergencia normal con sus respuestas.",
       ...P.flow,
       width: 360,
+      eps: [
+        {
+          method: "POST",
+          path: "/Emergency/createEmergency",
+          desc: "Endpoint para crear las emergencias normales",
+        },
+        {
+          method: "PUT",
+          path: "/Emergency/updateEmergency",
+          desc: "Endpoint para actualizar una emergencia normal",
+        },
+      ],
     },
   },
   {
     id: "logic-ambulancia",
     type: "card",
-    position: { x: 670, y: 1310 },
+    position: { x: 670, y: 1760 },
     data: {
       label: "⚙️  Lógica Ambulancia",
       description:
         "Endpoint y lógica diferente\npara la emergencia tipo ambulancia.",
       ...P.flow,
       width: 360,
+      eps: [
+        {
+          method: "POST",
+          path: "/Emergency/createEmergencyAmbulance",
+          desc: "Endpoint para crear una emergencia de tipo ambulancia",
+        },
+        {
+          method: "PUT",
+          path: "/Emergency/updateEmergencyAmbulance",
+          desc: "Endpoint para actualizar una emergencia de tipo ambulancia",
+        },
+      ],
     },
   },
   {
     id: "logic-interno",
     type: "card",
-    position: { x: 1220, y: 1310 },
+    position: { x: 1220, y: 1760 },
     data: {
       label: "⚙️  Lógica Servicio Interno",
       description:
         "Endpoint específico para crear\nel servicio interno con sus respuestas.",
       ...P.flow,
       width: 360,
+      eps: [
+        {
+          method: "POST",
+          path: "/Emergency/createInternalServices",
+          desc: "Endpoint para crear una emergencia de servicio interno",
+        },
+        {
+          method: "PUT",
+          path: "/Emergency/updateInternalService",
+          desc: "Endpoint para actualizar una emergencia de tipo de servicio interno",
+        },
+      ],
     },
   },
 
@@ -776,7 +812,7 @@ const initialNodes = [
   {
     id: "falsa-alarma-decision",
     type: "diamond",
-    position: { x: 740, y: 1540 },
+    position: { x: 740, y: 2100 },
     data: {
       label: "¿Es falsa alarma?",
       icon: "⚠️",
@@ -787,7 +823,7 @@ const initialNodes = [
   {
     id: "falsa-alarma-si",
     type: "card",
-    position: { x: 440, y: 1900 },
+    position: { x: 350, y: 2500 },
     data: {
       label: "🔄  Convertir a Emergencia Normal",
       description:
@@ -797,12 +833,19 @@ const initialNodes = [
       borderW: 3,
       badge: "⚠️ Falsa Alarma",
       badgeBg: "#FF6F00",
+      eps: [
+        {
+          method: "POST",
+          path: "/Emergency/falseAlarmEmergencyAmbulance",
+          desc: "Endpoint para activar la falsa alarma de una emergencia tipo ambulancia",
+        },
+      ],
     },
   },
   {
     id: "falsa-alarma-no",
     type: "card",
-    position: { x: 900, y: 1900 },
+    position: { x: 900, y: 2500 },
     data: {
       label: "✅  Continúa como Ambulancia",
       description:
@@ -817,7 +860,7 @@ const initialNodes = [
   {
     id: "table-emergencias",
     type: "card",
-    position: { x: 580, y: 2220 },
+    position: { x: 580, y: 2920 },
     data: {
       label: "🗄️  Tabla Emergencias",
       description:
@@ -829,6 +872,28 @@ const initialNodes = [
       borderW: 3,
       badge: "Tabla única — DB",
       badgeBg: "#37474F",
+      eps: [
+        {
+          method: "GET",
+          path: "/Emergency/getAllEmergenciesFilters",
+          desc: "Obtener todas las emergencias con filtros",
+        },
+        {
+          method: "GET",
+          path: "/Emergency/getInfoEmergency/{id}",
+          desc: "Obtener datos específicos de las emergencias normales",
+        },
+        {
+          method: "GET",
+          path: "/Emergency/getInfoEmergencyAmbulance/{emergencyId}",
+          desc: "Obtener información de las emergencias de tipo ambulancia",
+        },
+        {
+          method: "GET",
+          path: "/Emergency/getInfoInternalServices/{emergencyId}",
+          desc: "Obtener información del servicio interno",
+        },
+      ],
     },
   },
 
@@ -836,7 +901,7 @@ const initialNodes = [
   {
     id: "format-answer-decision",
     type: "diamond",
-    position: { x: 740, y: 2550 },
+    position: { x: 740, y: 3600 },
     data: {
       label: "¿Todas las preguntas llenas?",
       icon: "📝",
@@ -847,7 +912,7 @@ const initialNodes = [
   {
     id: "format-answer",
     type: "card",
-    position: { x: 630, y: 3000 },
+    position: { x: 630, y: 4150 },
     data: {
       label: "📝  Responder Formatos de la Emergencia",
       description:
@@ -862,7 +927,7 @@ const initialNodes = [
   {
     id: "finalize-ok",
     type: "card",
-    position: { x: 200, y: 2740 },
+    position: { x: 200, y: 3600 },
     data: {
       label: "✅  Emergencia Finalizada",
       description:
@@ -874,6 +939,88 @@ const initialNodes = [
       elevated: true,
       badge: "Finalizada ✓",
       badgeBg: "#558B2F",
+      eps: [
+        {
+          method: "POST",
+          path: "/Emergency/finishedEmergency",
+          desc: "Endpoint para finalizar las emergencias, cualquier tipo de emergencia",
+        },
+        {
+          method: "POST",
+          path: "/Emergency/activeFeedbackEmergency/{emergencyId}",
+          desc: "Endpoint para activar la retroalimentación de cualquier tipo de emergencia",
+        },
+        {
+          method: "GET",
+          path: "/Emergency/getInfoFeedback/{emergencyId}",
+          desc: "Endpoint para obtener información de la retroalimentación de las emergencias",
+        },
+        {
+          method: "GET",
+          path: "/Emergency/downloadSignature/{emergencyId}/{userId}",
+          desc: "Endpoint para descargar la firma del usuario por emergencia",
+        },
+      ],
+    },
+  },
+
+  /* ═══════════ ENDPOINTS EVIDENCIAS E INVESTIGACIÓN ═══════════ */
+  {
+    id: "evidence-endpoints",
+    type: "card",
+    position: { x: 1500, y: 2820 },
+    data: {
+      label: "📎  Evidencias e Investigación",
+      description:
+        "Endpoints para gestionar evidencias\ny procesos de investigación.",
+      ...P.flow,
+      width: 420,
+      borderW: 3,
+      elevated: true,
+      badge: "Evidencias",
+      badgeBg: "#00838F",
+      eps: [
+        {
+          method: "GET",
+          path: "/Emergency/getAllEvidence/{emergencyId}",
+          desc: "Obtener todas las evidencias de las emergencias, fotos, audios, documentos, etc",
+        },
+        {
+          method: "GET",
+          path: "/Emergency/getAllEvidenceAudio/{emergencyId}",
+          desc: "Obtener todos los audios específicamente de los bomberos y los testigos",
+        },
+        {
+          method: "GET",
+          path: "/Emergency/downloadEvidence/{evidenceId}",
+          desc: "Descargar cualquier tipo de evidencia, audios, fotos, documentos, etc",
+        },
+        {
+          method: "GET",
+          path: "/Emergency/downloadEvidenceAudio/{evidenceId}",
+          desc: "Descargar los audios de los bomberos y los maquinistas",
+        },
+        {
+          method: "POST",
+          path: "/Emergency/uploadEvidence",
+          desc: "Subir evidencias, como audios, fotos, documentos, etc",
+        },
+        {
+          method: "POST",
+          path: "/Emergency/uploadEvidenceAudio",
+          desc: "Subir audios del bombero y del testigo de la emergencia",
+        },
+        {
+          method: "POST",
+          path: "/Emergency/activateInvestigationToEmergency",
+          desc: "Activar la investigación a una emergencia cualquiera",
+        },
+        {
+          method: "DEL",
+          path: "/Emergency/deleteEvidence/{evidenceId}",
+          desc: "Eliminar una evidencia de una emergencia",
+        },
+      ],
     },
   },
 
@@ -1138,6 +1285,20 @@ const initialEdges = [
       extra: { sourceHandle: "right-out" },
     },
   ),
+
+  /* ═══════ EVIDENCIAS E INVESTIGACIÓN ═══════ */
+  mk(
+    "e-tbl-evidence",
+    "table-emergencias",
+    "evidence-endpoints",
+    "Gestión de evidencias",
+    "#00838F",
+    {
+      thick: false,
+      animated: false,
+      extra: { sourceHandle: "right-out", targetHandle: "left-in" },
+    },
+  ),
 ];
 
 /* ════════════════════════════════════════════════════
@@ -1186,6 +1347,7 @@ function App() {
     "format-answer-decision",
     "format-answer",
     "finalize-ok",
+    "evidence-endpoints",
   ];
 
   // Actualizar el título según la vista
